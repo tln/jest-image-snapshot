@@ -81,6 +81,7 @@ function diffImageToSnapshot(options) {
     snapshotIdentifier,
     snapshotsDir,
     updateSnapshot = false,
+    updateSnapshotOnFailureOnly = false,
     customDiffConfig = {},
     failureThreshold,
     failureThresholdType,
@@ -88,7 +89,8 @@ function diffImageToSnapshot(options) {
 
   let result = {};
   const baselineSnapshotPath = path.join(snapshotsDir, `${snapshotIdentifier}-snap.png`);
-  if (fs.existsSync(baselineSnapshotPath) && !updateSnapshot) {
+  let writeSnapshot = updateSnapshot && !updateSnapshotOnFailureOnly;
+  if (fs.existsSync(baselineSnapshotPath) && !writeSnapshot) {
     const outputDir = path.join(snapshotsDir, '__diff_output__');
     const diffOutputPath = path.join(outputDir, `${snapshotIdentifier}-diff.png`);
 
@@ -138,7 +140,10 @@ function diffImageToSnapshot(options) {
       throw new Error(`Unknown failureThresholdType: ${failureThresholdType}. Valid options are "pixel" or "percent".`);
     }
 
-    if (!pass) {
+    if (updateSnapshot) {
+      // Write snapshot if and only if the test would fail
+      writeSnapshot = !pass;
+    } else if (!pass) {
       mkdirp.sync(outputDir);
       const compositeResultImage = new PNG({
         width: imageWidth * 3,
@@ -169,7 +174,8 @@ function diffImageToSnapshot(options) {
       diffRatio,
       diffPixelCount,
     };
-  } else {
+  }
+  if (writeSnapshot) {
     mkdirp.sync(snapshotsDir);
     fs.writeFileSync(baselineSnapshotPath, receivedImageBuffer);
 

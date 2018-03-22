@@ -25,6 +25,7 @@ function updateSnapshotState(oldSnapshotState, newSnapshotState) {
 }
 
 function configureToMatchImageSnapshot({
+  updateSnapshotOnFailureOnly: commonUpdateSnapshotOnFailureOnly = false,
   customDiffConfig: commonCustomDiffConfig = {},
   noColors: commonNoColors = false,
   failureThreshold: commonFailureThreshold = 0,
@@ -33,6 +34,7 @@ function configureToMatchImageSnapshot({
   return function toMatchImageSnapshot(received, {
     customSnapshotIdentifier = '',
     customSnapshotsDir,
+    updateSnapshotOnFailureOnly = commonUpdateSnapshotOnFailureOnly,
     customDiffConfig = {},
     noColors = commonNoColors,
     failureThreshold = commonFailureThreshold,
@@ -52,6 +54,7 @@ function configureToMatchImageSnapshot({
       snapshotIdentifier,
       snapshotsDir: customSnapshotsDir || path.join(path.dirname(testPath), SNAPSHOTS_DIR),
       updateSnapshot: snapshotState._updateSnapshot === 'all',
+      updateSnapshotOnFailureOnly,
       customDiffConfig: Object.assign({}, commonCustomDiffConfig, customDiffConfig),
       failureThreshold,
       failureThresholdType,
