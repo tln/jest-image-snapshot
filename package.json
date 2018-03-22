@@ -1,5 +1,5 @@
 {
-  "name": "jest-image-snapshot",
+  "name": "@tln/jest-image-snapshot",
   "version": "2.4.0",
   "description": "Jest matcher for image comparisons. Most commonly used for visual regression testing.",
   "main": "src/index.js",
@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/americanexpress/jest-image-snapshot.git"
+    "url": "https://github.com/tln/jest-image-snapshot.git"
   },
   "author": "Andres Escobar <andres.escobar@aexp.com> (https://github.com/anescobar1991)",
   "license": "Apache-2.0",
