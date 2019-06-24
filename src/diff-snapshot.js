@@ -89,8 +89,8 @@ function diffImageToSnapshot(options) {
 
   let result = {};
   const baselineSnapshotPath = path.join(snapshotsDir, `${snapshotIdentifier}-snap.png`);
-  let writeSnapshot = updateSnapshot && !updateSnapshotOnFailureOnly;
-  if (fs.existsSync(baselineSnapshotPath) && !writeSnapshot) {
+  let writeSnapshot = updateSnapshot && !updateSnapshotOnFailureOnly || !fs.existsSync(baselineSnapshotPath);
+  if (!writeSnapshot) {
     const outputDir = path.join(snapshotsDir, '__diff_output__');
     const diffOutputPath = path.join(outputDir, `${snapshotIdentifier}-diff.png`);
 
@@ -179,7 +179,8 @@ function diffImageToSnapshot(options) {
     mkdirp.sync(snapshotsDir);
     fs.writeFileSync(baselineSnapshotPath, receivedImageBuffer);
 
-    result = updateSnapshot ? { updated: true } : { added: true };
+    if (result.pass === undefined) result.pass = true;
+    result[updateSnapshot ? 'updated' : 'added'] = true;
   }
   return result;
 }
